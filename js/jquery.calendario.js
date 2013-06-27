@@ -9,14 +9,11 @@
  * http://www.codrops.com
  */
 ;( function( $, window, undefined ) {
-	
 	'use strict';
 
 	$.Calendario = function( options, element ) {
-		
 		this.$el = $( element );
 		this._init( options );
-		
 	};
 
 	// the options
@@ -49,9 +46,7 @@
 	};
 
 	$.Calendario.prototype = {
-
 		_init : function( options ) {
-			
 			// options
 			this.options = $.extend( true, {}, $.Calendario.defaults, options );
 
@@ -61,14 +56,11 @@
 			this.caldata = this.options.caldata || {};
 			this._generateTemplate();
 			this._initEvents();
-
 		},
 		_initEvents : function() {
-
 			var self = this;
 
 			this.$el.on( 'click.calendario', 'div.fc-row > div', function() {
-
 				var $cell = $( this ),
 					idx = $cell.index(),
 					$content = $cell.children( 'div' ),
@@ -81,16 +73,11 @@
 						weekdayname : self.options.weeks[ idx + self.options.startIn ]
 					};
 
-				if( dateProp.day ) {
-					self.options.onDayClick( $cell, $content, dateProp );
-				}
-
+				if( dateProp.day ) self.options.onDayClick( $cell, $content, dateProp );
 			} );
-
 		},
 		// Calendar logic based on http://jszen.blogspot.pt/2007/03/how-to-build-simple-calendar-with.html
 		_generateTemplate : function( callback ) {
-
 			var head = this._getHead(),
 				body = this._getBody(),
 				rowClass;
@@ -102,34 +89,27 @@
 			}
 
 			this.$cal = $( '<div class="fc-calendar ' + rowClass + '">' ).append( head, body );
-
 			this.$el.find( 'div.fc-calendar' ).remove().end().append( this.$cal );
 
 			if( callback ) { callback.call(); }
-
 		},
 		_getHead : function() {
-
 			var html = '<div class="fc-head">';
 		
 			for ( var i = 0; i <= 6; i++ ) {
-
 				var pos = i + this.options.startIn,
 					j = pos > 6 ? pos - 6 - 1 : pos;
 
 				html += '<div>';
 				html += this.options.displayWeekAbbr ? this.options.weekabbrs[ j ] : this.options.weeks[ j ];
 				html += '</div>';
-
 			}
 
 			html += '</div>';
 
 			return html;
-
 		},
 		_getBody : function() {
-
 			var d = new Date( this.year, this.month + 1, 0 ),
 				// number of days in the month
 				monthLength = d.getDate(),
@@ -144,10 +124,8 @@
 
 			// this loop is for weeks (rows)
 			for ( var i = 0; i < 7; i++ ) {
-
 				// this loop is for weekdays (cells)
 				for ( var j = 0; j <= 6; j++ ) {
-
 					var pos = this.startingDay - this.options.startIn,
 						p = pos < 0 ? 6 + pos + 1 : pos,
 						inner = '',
@@ -156,60 +134,43 @@
 						content = '';
 					
 					if ( day <= monthLength && ( i > 0 || j >= p ) ) {
-
 						inner += '<span class="fc-date">' + day + '</span><span class="fc-weekday">' + this.options.weekabbrs[ j + this.options.startIn > 6 ? j + this.options.startIn - 6 - 1 : j + this.options.startIn ] + '</span>';
 
 						// this day is:
 						var strdate = ( this.month + 1 < 10 ? '0' + ( this.month + 1 ) : this.month + 1 ) + '-' + ( day < 10 ? '0' + day : day ) + '-' + this.year,
 							dayData = this.caldata[ strdate ];
 
-						if( dayData ) {
-							content = dayData;
-						}
-
-						if( content !== '' ) {
-							inner += '<div>' + content + '</div>';
-						}
+						if( dayData ) content = dayData;
+						if( content !== '' ) inner += '<div>' + content + '</div>';
 
 						++day;
-
-					}
-					else {
+					} else {
 						today = false;
 					}
 
 					var cellClasses = today ? 'fc-today ' : '';
-					if ( past ) {
-						cellClasses += 'fc-past ';
-					}
-					if( content !== '' ) {
-						cellClasses += 'fc-content';
-					}
+					if ( past ) cellClasses += 'fc-past ';
+					if ( content !== '' ) cellClasses += 'fc-content';
 
 					html += cellClasses !== '' ? '<div class="' + cellClasses + '">' : '<div>';
 					html += inner;
 					html += '</div>';
-
 				}
 
 				// stop making rows if we've run out of days
 				if (day > monthLength) {
 					this.rowTotal = i + 1;
 					break;
-				} 
-				else {
+				} else {
 					html += '</div><div class="fc-row">';
 				}
-
 			}
 			html += '</div></div>';
 
 			return html;
-
 		},
 		// based on http://stackoverflow.com/a/8390325/989439
 		_isValidDate : function( date ) {
-
 			date = date.replace(/-/gi,'');
 			var month = parseInt( date.substring( 0, 2 ), 10 ),
 				day = parseInt( date.substring( 2, 4 ), 10 ),
@@ -217,17 +178,13 @@
 
 			if( ( month < 1 ) || ( month > 12 ) ) {
 				return false;
-			}
-			else if( ( day < 1 ) || ( day > 31 ) )  {
+			} else if( ( day < 1 ) || ( day > 31 ) )  {
 				return false;
-			}
-			else if( ( ( month == 4 ) || ( month == 6 ) || ( month == 9 ) || ( month == 11 ) ) && ( day > 30 ) )  {
+			} else if( ( ( month == 4 ) || ( month == 6 ) || ( month == 9 ) || ( month == 11 ) ) && ( day > 30 ) )  {
 				return false;
-			}
-			else if( ( month == 2 ) && ( ( ( year % 400 ) == 0) || ( ( year % 4 ) == 0 ) ) && ( ( year % 100 ) != 0 ) && ( day > 29 ) )  {
+			} else if( ( month == 2 ) && ( ( ( year % 400 ) == 0) || ( ( year % 4 ) == 0 ) ) && ( ( year % 100 ) != 0 ) && ( day > 29 ) )  {
 				return false;
-			}
-			else if( ( month == 2 ) && ( ( year % 100 ) == 0 ) && ( day > 29 ) )  {
+			} else if( ( month == 2 ) && ( ( year % 100 ) == 0 ) && ( day > 29 ) )  {
 				return false;
 			}
 
@@ -236,35 +193,25 @@
 				month : month,
 				year : year
 			};
-
 		},
 		_move : function( period, dir, callback ) {
-
 			if( dir === 'previous' ) {
-				
 				if( period === 'month' ) {
 					this.year = this.month > 0 ? this.year : --this.year;
 					this.month = this.month > 0 ? --this.month : 11;
-				}
-				else if( period === 'year' ) {
+				} else if( period === 'year' ) {
 					this.year = --this.year;
 				}
-
-			}
-			else if( dir === 'next' ) {
-
+			} else if( dir === 'next' ) {
 				if( period === 'month' ) {
 					this.year = this.month < 11 ? this.year : ++this.year;
 					this.month = this.month < 11 ? ++this.month : 0;
-				}
-				else if( period === 'year' ) {
+				} else if( period === 'year' ) {
 					this.year = ++this.year;
 				}
-
 			}
 
 			this._generateTemplate( callback );
-
 		},
 		/************************* 
 		******PUBLIC METHODS *****
@@ -281,35 +228,27 @@
 		// gets the cell's content div associated to a day of the current displayed month
 		// day : 1 - [28||29||30||31]
 		getCell : function( day ) {
-
 			var row = Math.floor( ( day + this.startingDay - this.options.startIn ) / 7 ),
 				pos = day + this.startingDay - this.options.startIn - ( row * 7 ) - 1;
 
 			return this.$cal.find( 'div.fc-body' ).children( 'div.fc-row' ).eq( row ).children( 'div' ).eq( pos ).children( 'div' );
-
 		},
 		setData : function( caldata ) {
-
 			caldata = caldata || {};
 			$.extend( this.caldata, caldata );
 			this._generateTemplate();
-
 		},
 		// goes to today's month/year
 		gotoNow : function( callback ) {
-
 			this.month = this.today.getMonth();
 			this.year = this.today.getFullYear();
 			this._generateTemplate( callback );
-
 		},
 		// goes to month/year
 		gotoDirect : function( month, year, callback ) {
-
 			this.month = month - 1;
 			this.year = year;
 			this._generateTemplate( callback );
-
 		},
 		gotoPreviousMonth : function( callback ) {
 			this._move( 'month', 'previous', callback );
@@ -323,70 +262,41 @@
 		gotoNextYear : function( callback ) {
 			this._move( 'year', 'next', callback );
 		}
-
 	};
 	
 	var logError = function( message ) {
-
-		if ( window.console ) {
-
-			window.console.error( message );
-		
-		}
-
+		if ( window.console ) window.console.error( message );
 	};
 	
 	$.fn.calendario = function( options ) {
-
 		var instance = $.data( this, 'calendario' );
 		
 		if ( typeof options === 'string' ) {
-			
 			var args = Array.prototype.slice.call( arguments, 1 );
-			
 			this.each(function() {
-			
 				if ( !instance ) {
-
 					logError( "cannot call methods on calendario prior to initialization; " +
 					"attempted to call method '" + options + "'" );
 					return;
-				
 				}
 				
 				if ( !$.isFunction( instance[options] ) || options.charAt(0) === "_" ) {
-
 					logError( "no such method '" + options + "' for calendario instance" );
 					return;
-				
 				}
 				
 				instance[ options ].apply( instance, args );
-			
 			});
-		
-		} 
-		else {
-		
+		} else {
 			this.each(function() {
-				
 				if ( instance ) {
-
 					instance._init();
-				
-				}
-				else {
-
+				} else {
 					instance = $.data( this, 'calendario', new $.Calendario( options, this ) );
-				
 				}
-
 			});
-		
 		}
 		
 		return instance;
-		
 	};
-	
 } )( jQuery, window );
